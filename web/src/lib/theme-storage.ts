@@ -17,12 +17,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 export const THEME_STORAGE_KEYS = {
-  mode: 'newapi:theme:v1:mode',
-  preset: 'newapi:theme:v1:preset',
-  font: 'newapi:theme:v1:font',
-  radius: 'newapi:theme:v1:radius',
-  scale: 'newapi:theme:v1:scale',
-  contentLayout: 'newapi:theme:v1:content-layout',
+  mode: 'site:theme:v1:mode',
+  preset: 'site:theme:v1:preset',
+  font: 'site:theme:v1:font',
+  radius: 'site:theme:v1:radius',
+  scale: 'site:theme:v1:scale',
+  contentLayout: 'site:theme:v1:content-layout',
 } as const
 
 export function readThemePreference<T extends string>(

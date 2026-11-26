@@ -32,6 +32,42 @@ For commercial licensing, please contact support@quantumnous.com
  *   blocks so an explicit user choice overrides the preset's default radius.
  */
 
+/* ── Huiliu (fork default; see HUILIU_CHANGES.md) ─────────────────────── */
+/* Teal ink palette shared with the custom home page. Surfaces are derived
+ * from --primary by the semantic surface bridge below; chart-2 / chart-4 are
+ * green / amber because the bridge maps them to success / warning. */
+[data-theme-preset='huiliu'] {
+  --primary: oklch(0.511 0.086 186.4);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.954 0.024 184);
+  --secondary-foreground: oklch(0.32 0.05 190);
+  --ring: oklch(0.6 0.104 184.7);
+  --chart-1: oklch(0.6 0.104 184.7);
+  --chart-2: oklch(0.64 0.15 155);
+  --chart-3: oklch(0.62 0.14 240);
+  --chart-4: oklch(0.77 0.15 75);
+  --chart-5: oklch(0.6 0.15 290);
+  --sidebar-primary: oklch(0.511 0.086 186.4);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-ring: oklch(0.6 0.104 184.7);
+  --radius: 0.625rem;
+}
+.dark [data-theme-preset='huiliu'] {
+  --primary: oklch(0.777 0.152 181.9);
+  --primary-foreground: oklch(0.24 0.045 192);
+  --secondary: oklch(0.3 0.04 190);
+  --secondary-foreground: oklch(0.93 0.03 185);
+  --ring: oklch(0.777 0.152 181.9);
+  --chart-1: oklch(0.777 0.152 181.9);
+  --chart-2: oklch(0.74 0.15 155);
+  --chart-3: oklch(0.7 0.13 240);
+  --chart-4: oklch(0.82 0.14 80);
+  --chart-5: oklch(0.7 0.14 290);
+  --sidebar-primary: oklch(0.777 0.152 181.9);
+  --sidebar-primary-foreground: oklch(0.24 0.045 192);
+  --sidebar-ring: oklch(0.777 0.152 181.9);
+}
+
 /* ── Underground ──────────────────────────────────────────────────────── */
 [data-theme-preset='underground'] {
   --primary: oklch(0.5315 0.0694 156.19);

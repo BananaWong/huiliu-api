@@ -25,6 +25,12 @@ For commercial licensing, please contact support@quantumnous.com
 
 export const THEME_PRESETS = [
   {
+    // huiliu: fork default palette (teal ink), see HUILIU_CHANGES.md
+    value: 'huiliu',
+    name: 'Teal Ink',
+    swatches: ['oklch(0.511 0.086 186.4)', 'oklch(0.24 0.045 192)'],
+  },
+  {
     value: 'default',
     name: 'Default',
     swatches: ['oklch(0.72 0.18 250)', 'oklch(0.7 0.12 280)'],
@@ -112,7 +118,7 @@ export type ThemeCustomization = {
 }
 
 export const DEFAULT_THEME_CUSTOMIZATION: ThemeCustomization = {
-  preset: 'default',
+  preset: 'huiliu',
   font: 'default',
   radius: 'default',
   scale: 'default',

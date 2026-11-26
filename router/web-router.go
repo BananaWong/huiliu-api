@@ -1,7 +1,10 @@
 package router
 
 import (
+	"bytes"
 	"embed"
+	"encoding/base64"
+	"html"
 	"net/http"
 	"strings"
 
@@ -22,6 +25,32 @@ func SetWebRouter(router *gin.Engine, assets WebAssets, pluginDispatcher gin.Han
 	frontendFS := common.EmbedFolder(assets.BuildFS, "web/dist")
 	compress := gzip.Gzip(gzip.DefaultCompression)
 
+	// huiliu: the site icon follows the Logo option (data URI or URL); the
+	// bundled file is only the fallback when no logo is configured.
+	siteIcon := func(c *gin.Context) {
+		logo := common.Logo
+		if rest, ok := strings.CutPrefix(logo, "data:"); ok {
+			meta, payload, found := strings.Cut(rest, ",")
+			mimeType, isBase64 := strings.CutSuffix(meta, ";base64")
+			if found && isBase64 && strings.HasPrefix(mimeType, "image/") {
+				if decoded, err := base64.StdEncoding.DecodeString(payload); err == nil {
+					c.Header("Cache-Control", "public, max-age=3600")
+					c.Header("X-Content-Type-Options", "nosniff")
+					c.Header("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'")
+					c.Data(http.StatusOK, mimeType, decoded)
+					return
+				}
+			}
+		}
+		if strings.HasPrefix(logo, "https://") || strings.HasPrefix(logo, "http://") {
+			c.Redirect(http.StatusFound, logo)
+			return
+		}
+		c.FileFromFS(c.Request.URL.Path, frontendFS)
+	}
+	router.GET("/favicon.ico", siteIcon)
+	router.GET("/logo.png", siteIcon)
+
 	router.NoRoute(
 		pluginDispatcher,
 		middleware.RouteTag("web"),
@@ -41,7 +70,9 @@ func SetWebRouter(router *gin.Engine, assets WebAssets, pluginDispatcher gin.Han
 				return
 			}
 			c.Header("Cache-Control", "no-cache")
-			c.Data(http.StatusOK, "text/html; charset=utf-8", assets.IndexPage)
+			// huiliu: the page title comes from the SystemName option.
+			siteName := []byte(html.EscapeString(common.SystemName))
+			c.Data(http.StatusOK, "text/html; charset=utf-8", bytes.ReplaceAll(assets.IndexPage, []byte("__SITE_NAME__"), siteName))
 		},
 	)
 }

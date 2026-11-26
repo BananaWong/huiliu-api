@@ -194,7 +194,10 @@ var GeminiSafetySetting string
 var CohereSafetySetting string
 
 const (
-	RequestIdKey         = "X-Oneapi-Request-Id"
+	RequestIdKey = "X-Request-Id"
+	// LegacyRequestIdKey is the upstream header name; replies from upstream
+	// relays that still send it are captured like RequestIdKey (huiliu).
+	LegacyRequestIdKey   = "X-Oneapi-Request-Id"
 	UpstreamRequestIdKey = "X-Upstream-Request-Id"
 )
 

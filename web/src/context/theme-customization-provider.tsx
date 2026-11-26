@@ -128,10 +128,9 @@ export function ThemeCustomizationProvider(props: {
   // Mirror state to the <body> via data-* attributes so theme-presets.css can
   // override CSS variables at the right cascade layer.
   useEffect(() => {
-    applyAttribute(
-      'data-theme-preset',
-      preset === DEFAULT_THEME_CUSTOMIZATION.preset ? null : preset
-    )
+    // huiliu: the base :root palette is the `default` preset; the fork's
+    // default preset (`huiliu`) still needs its attribute.
+    applyAttribute('data-theme-preset', preset === 'default' ? null : preset)
   }, [preset])
 
   // Resolve Auto into the preset font or the browser's sans-serif while

@@ -32,7 +32,7 @@ func ShouldCopyUpstreamHeader(c *gin.Context, k string, v []string) bool {
 	if strings.EqualFold(k, "Content-Length") {
 		return false
 	}
-	if strings.EqualFold(k, common.RequestIdKey) {
+	if strings.EqualFold(k, common.RequestIdKey) || strings.EqualFold(k, common.LegacyRequestIdKey) {
 		if c != nil && len(v) > 0 {
 			c.Set(common.UpstreamRequestIdKey, v[0])
 		}

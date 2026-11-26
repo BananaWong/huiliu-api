@@ -21,7 +21,8 @@ For commercial licensing, please contact support@quantumnous.com
  */
 
 // System Configuration Defaults
-export const DEFAULT_SYSTEM_NAME = 'New API'
+// huiliu: neutral fallback shown only until the SystemName option loads
+export const DEFAULT_SYSTEM_NAME = 'API'
 export const DEFAULT_LOGO = '/logo.png'
 
 // LocalStorage Keys

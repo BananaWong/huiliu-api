@@ -6,12 +6,9 @@
     <meta name="google" content="notranslate" />
 
     <!-- Primary Meta Tags -->
-    <title>New API</title>
-    <meta name="title" content="New API" />
-    <meta
-      name="description"
-      content="Unified AI API gateway and admin dashboard."
-    />
+    <title>__SITE_NAME__</title>
+    <meta name="title" content="__SITE_NAME__" />
+    <meta name="description" content="__SITE_NAME__" />
 
     <meta name="theme-color" content="#fff" />
     <!-- Resolve the theme before first paint so the page never flashes light
@@ -21,7 +18,7 @@
       ;(function () {
         var theme = 'system'
         try {
-          theme = localStorage.getItem('newapi:theme:v1:mode') || 'system'
+          theme = localStorage.getItem('site:theme:v1:mode') || 'system'
         } catch (e) {}
         if (theme !== 'dark' && theme !== 'light') {
           theme = window.matchMedia('(prefers-color-scheme: dark)').matches
