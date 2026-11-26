@@ -3,9 +3,10 @@
 name: huiliu image
 
 on:
+  # Branch pushes only: any tag push would also fire the upstream docker,
+  # electron and release workflows kept in this repository.
   push:
     branches: [huiliu/main]
-    tags: ['huiliu-*']
   workflow_dispatch:
 
 permissions:
@@ -22,11 +23,7 @@ jobs:
         id: v
         run: |
           SHORT_SHA="$(git rev-parse --short HEAD)"
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            VERSION="${GITHUB_REF_NAME}"
-          else
-            VERSION="huiliu-$(date -u +'%Y%m%d')-${SHORT_SHA}"
-          fi
+          VERSION="huiliu-$(date -u +'%Y%m%d')-${SHORT_SHA}"
           echo "${VERSION}" > VERSION
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "sha=${SHORT_SHA}" >> "$GITHUB_OUTPUT"

@@ -25,6 +25,8 @@ Server
 - `relaykit/types/error.go`, `controller/*`, `middleware/utils.go`, `service/error.go`: the error
   type in relay error bodies is `api_error` (tests updated).
 - `main.go`: the analytics placeholders no longer leave marker comments in the page.
+- `common/constants.go`: the built-in SystemName default is the neutral `API` (only used until
+  the SystemName option is set).
 
 Frontend
 - `web/src/huiliu/`: fork-specific code (auth page frame, license notice, source links).
@@ -40,4 +42,5 @@ Frontend
   SystemName option loads.
 - `web/public/favicon.ico`, `web/public/logo.png`: neutral fallback icons.
 - Locale files: strings for the above in all seven languages (`web/scripts/huiliu-add-i18n.mjs`
-  appends keys without re-serializing the files).
+  appends keys without re-serializing the files). The "Model Square" label reads
+  "Models & Pricing" / 模型与价格 / 模型與價格.
