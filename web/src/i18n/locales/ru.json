@@ -7757,6 +7757,7 @@
     "Changes from upstream": "Изменения относительно исходного проекта",
     "One key for leading AI models": "Один ключ для ведущих моделей ИИ",
     "OpenAI-compatible API with usage-based billing. Every charge is listed in your logs.": "API, совместимый с OpenAI, с оплатой по использованию. Каждое списание видно в журнале.",
-    "Back to home": "На главную"
+    "Back to home": "На главную",
+    "Admin console": "Панель администратора"
   }
 }

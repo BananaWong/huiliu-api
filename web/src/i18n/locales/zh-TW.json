@@ -7757,6 +7757,7 @@
     "Changes from upstream": "與上游的差異",
     "One key for leading AI models": "一組金鑰，接入主流大模型",
     "OpenAI-compatible API with usage-based billing. Every charge is listed in your logs.": "相容 OpenAI 的介面，按量計費，每一筆扣費都能在日誌中查到。",
-    "Back to home": "返回首頁"
+    "Back to home": "返回首頁",
+    "Admin console": "管理後台"
   }
 }

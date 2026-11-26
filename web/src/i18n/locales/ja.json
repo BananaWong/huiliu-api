@@ -7757,6 +7757,7 @@
     "Changes from upstream": "上流からの変更点",
     "One key for leading AI models": "一つのキーで主要な AI モデルへ",
     "OpenAI-compatible API with usage-based billing. Every charge is listed in your logs.": "OpenAI 互換の API、従量課金。すべての課金はログで確認できます。",
-    "Back to home": "ホームに戻る"
+    "Back to home": "ホームに戻る",
+    "Admin console": "管理画面"
   }
 }

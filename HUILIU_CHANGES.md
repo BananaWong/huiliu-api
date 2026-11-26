@@ -34,6 +34,10 @@ Frontend
   (attribution, upstream link, source of this build, license); the empty state no longer
   shows the upstream repository.
 - `web/src/features/auth/auth-layout.tsx`: auth pages use the two-column frame from `web/src/huiliu/`.
+- `web/src/routes/_authenticated/route.tsx`: signed-in pages use `ConsoleLayout` from
+  `web/src/huiliu/console-shell.tsx`. Account pages (overview, dashboard, keys, usage logs,
+  wallet, profile, security) get a top-tab shell without the sidebar; admin pages and nested
+  workspaces keep the upstream sidebar layout. Administrators get an "Admin console" tab.
 - `web/src/components/layout/components/public-header.tsx`: the public header is a full-width bar
   with a bottom rule (no floating pill on scroll); the active link has a primary-colour underline.
 - `web/src/features/pricing/index.tsx`: plain primary-colour wash instead of the multi-colour

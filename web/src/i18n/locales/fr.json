@@ -7757,6 +7757,7 @@
     "Changes from upstream": "Modifications par rapport à l'amont",
     "One key for leading AI models": "Une clé pour les principaux modèles d’IA",
     "OpenAI-compatible API with usage-based billing. Every charge is listed in your logs.": "API compatible OpenAI, facturée à l’usage. Chaque débit figure dans vos journaux.",
-    "Back to home": "Retour à l’accueil"
+    "Back to home": "Retour à l’accueil",
+    "Admin console": "Administration"
   }
 }

@@ -7757,6 +7757,7 @@
     "Changes from upstream": "Thay đổi so với dự án gốc",
     "One key for leading AI models": "Một khóa cho các mô hình AI hàng đầu",
     "OpenAI-compatible API with usage-based billing. Every charge is listed in your logs.": "API tương thích OpenAI, tính phí theo mức dùng. Mọi khoản trừ đều có trong nhật ký.",
-    "Back to home": "Về trang chủ"
+    "Back to home": "Về trang chủ",
+    "Admin console": "Trang quản trị"
   }
 }
