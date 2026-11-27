@@ -132,11 +132,11 @@ func hideUpstreamWordingInUserLog(log *Log) {
 	}
 	var outcome struct {
 		StatusCode int    `json:"status_code"`
-		ErrorCode  string `json:"error_code"`
+		ErrorType  string `json:"error_type"`
 	}
 	_ = common.UnmarshalJsonStr(log.Other, &outcome)
 	unavailable := i18n.Translate("", i18n.MsgRelayUpstreamUnavailable)
-	text := common.HideUpstreamWording(log.Content, outcome.StatusCode, outcome.ErrorCode, unavailable)
+	text := common.HideUpstreamWording(log.Content, outcome.StatusCode, outcome.ErrorType, unavailable)
 	if text == unavailable && outcome.StatusCode != 0 {
 		text = fmt.Sprintf("status_code=%d, %s", outcome.StatusCode, unavailable)
 	}

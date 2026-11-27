@@ -25,15 +25,15 @@ func HideUpstreamWordingForCaller(c *gin.Context, e *types.NewAPIError) {
 		return
 	}
 	unavailable := i18n.T(c, i18n.MsgRelayUpstreamUnavailable)
-	code := string(e.GetErrorCode())
-	e.SetMessage(common.HideUpstreamWording(e.Error(), e.StatusCode, code, unavailable))
+	errorType := string(e.GetErrorType())
+	e.SetMessage(common.HideUpstreamWording(e.Error(), e.StatusCode, errorType, unavailable))
 	switch relayError := e.RelayError.(type) {
 	case types.OpenAIError:
-		relayError.Message = common.HideUpstreamWording(relayError.Message, e.StatusCode, code, unavailable)
+		relayError.Message = common.HideUpstreamWording(relayError.Message, e.StatusCode, errorType, unavailable)
 		relayError.Metadata = nil
 		e.RelayError = relayError
 	case types.ClaudeError:
-		relayError.Message = common.HideUpstreamWording(relayError.Message, e.StatusCode, code, unavailable)
+		relayError.Message = common.HideUpstreamWording(relayError.Message, e.StatusCode, errorType, unavailable)
 		e.RelayError = relayError
 	}
 	e.Metadata = nil

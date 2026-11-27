@@ -248,8 +248,8 @@ func TestFormatUserLogsHidesUpstreamWording(t *testing.T) {
 	require.NoError(t, i18n.Init())
 	unavailable := i18n.Translate("", i18n.MsgRelayUpstreamUnavailable)
 	require.NotEqual(t, i18n.MsgRelayUpstreamUnavailable, unavailable)
-	outcome := func(status int, code string) string {
-		return common.MapToJsonStr(map[string]any{"status_code": status, "error_code": code})
+	outcome := func(status int, errorType string, code string) string {
+		return common.MapToJsonStr(map[string]any{"status_code": status, "error_type": errorType, "error_code": code})
 	}
 	cases := []struct {
 		name string
@@ -258,25 +258,37 @@ func TestFormatUserLogsHidesUpstreamWording(t *testing.T) {
 	}{
 		{
 			name: "upstream could not serve: fixed sentence",
-			log: Log{Type: LogTypeError, ChannelId: 9, Other: outcome(503, "bad_response_status_code"),
+			log: Log{Type: LogTypeError, ChannelId: 9, Other: outcome(503, "openai_error", "bad_response_status_code"),
 				Content: "status_code=503, 当前分组 openai官渠 下对于模型 gpt-image-2 无可用渠道 https://api.wukong.support (request id: 2026112719)"},
 			want: "status_code=503, " + unavailable,
 		},
 		{
 			name: "caller error: wording kept, every host masked",
-			log: Log{Type: LogTypeError, ChannelId: 9, Other: outcome(400, "invalid_request_error"),
+			log: Log{Type: LogTypeError, ChannelId: 9, Other: outcome(400, "openai_error", "invalid_request_error"),
 				Content: "status_code=400, gpt-image-2.6-sunburst: size not supported by ohmyapis.store (see https://docs.example.com/x from 10.1.2.3)"},
 			want: "status_code=400, gpt-image-2.6-sunburst: size not supported by *** (see *** from ***)",
 		},
 		{
 			name: "gateway's own error keeps its wording",
-			log: Log{Type: LogTypeError, ChannelId: 9, Other: outcome(403, "insufficient_user_quota"),
+			log: Log{Type: LogTypeError, ChannelId: 9, Other: outcome(403, "api_error", "insufficient_user_quota"),
 				Content: "status_code=403, user quota is not enough"},
 			want: "status_code=403, user quota is not enough",
 		},
 		{
+			name: "gateway's own request error at 500 is not called an upstream failure",
+			log: Log{Type: LogTypeError, ChannelId: 9, Other: outcome(500, "api_error", "invalid_request"),
+				Content: "status_code=500, failed to copy request to ImageRequest: bad size"},
+			want: "status_code=500, failed to copy request to ImageRequest: bad size",
+		},
+		{
+			name: "relay upstream out of quota reads like ours but is hidden",
+			log: Log{Type: LogTypeError, ChannelId: 11, Other: outcome(403, "openai_error", "insufficient_user_quota"),
+				Content: "status_code=403, 用户额度不足, 剩余额度: ＄0.01"},
+			want: "status_code=403, " + unavailable,
+		},
+		{
 			name: "request that reached no channel is left alone",
-			log:  Log{Type: LogTypeError, Other: outcome(503, "get_channel_failed"), Content: "no channel for model x.example.com"},
+			log:  Log{Type: LogTypeError, Other: outcome(503, "api_error", "get_channel_failed"), Content: "no channel for model x.example.com"},
 			want: "no channel for model x.example.com",
 		},
 		{

@@ -71,12 +71,15 @@ Server
 - `main.go`: starts the health job.
 - `common/huiliu_upstream_wording.go`, `service/huiliu_upstream_wording.go`, `controller/relay.go`,
   `controller/playground.go`, `model/log.go`, `setting/operation_setting/huiliu_privacy_setting.go`, `i18n/`:
-  callers no longer read an upstream's own wording. For a request that reached a channel, the final error
-  becomes `relay.upstream_unavailable` when the upstream could not serve it (401, 402, 403, 408, 429, 5xx),
-  except for the gateway's own errors such as insufficient quota; any other error keeps its text with every
-  URL, domain name and IPv4 address masked (the stock masking covers only the channel's own address). The
-  same applies to the error logs users read and export; administrators still see the original text. Option
-  `huiliu_privacy_setting.hide_upstream_wording`, on by default.
+  callers no longer read an upstream's own wording. For a request that reached a channel, an error that
+  carries what the upstream returned (any type other than `api_error`) becomes `relay.upstream_unavailable`
+  when the upstream could not serve it (401, 402, 403, 408, 429, 5xx); the gateway's own errors (`api_error`,
+  such as a rejected request or insufficient quota) keep their wording whatever the status. Every other error
+  keeps its text with every URL, domain name and IPv4 address masked (the stock masking covers only the
+  channel's own address). The type decides, not the code: a relay upstream answers with codes such as
+  `insufficient_user_quota`. The same applies to the error logs users read and export; administrators still
+  see the original text. Covered: the main relay and playground error responses; Gemini-native, Responses
+  WebSocket and task errors are not. Option `huiliu_privacy_setting.hide_upstream_wording`, on by default.
 
 Frontend
 - `web/src/huiliu/health/`: Channel Health page (admin sidebar, `/channel-health`) and Model Status page

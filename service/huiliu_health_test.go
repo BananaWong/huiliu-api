@@ -6,12 +6,18 @@ licensed under the GNU Affero General Public License v3.0. See HUILIU_CHANGES.md
 package service
 
 import (
+	"errors"
+	"net/http/httptest"
 	"strconv"
 	"testing"
 
 	"github.com/QuantumNous/new-api/common"
+	"github.com/QuantumNous/new-api/constant"
+	"github.com/QuantumNous/new-api/i18n"
 	"github.com/QuantumNous/new-api/model"
+	"github.com/QuantumNous/new-api/relaykit/types"
 	"github.com/QuantumNous/new-api/setting/operation_setting"
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -133,4 +139,46 @@ func TestDecideHealthActionReenable(t *testing.T) {
 	assert.Empty(t, DecideHealthAction(common.ChannelStatusAutoDisabled, other, HealthStats{}, now, s).Kind)
 	assert.Empty(t, DecideHealthAction(common.ChannelStatusManuallyDisabled, disabled(1, 99999), HealthStats{}, now, s).Kind)
 	assert.Zero(t, NextRetryAt(common.ChannelStatusAutoDisabled, other, s))
+}
+
+func TestHideUpstreamWordingForCaller(t *testing.T) {
+	require.NoError(t, i18n.Init())
+	unavailable := i18n.Translate(i18n.LangZhCN, i18n.MsgRelayUpstreamUnavailable)
+	cases := []struct {
+		name string
+		err  *types.NewAPIError
+		want string
+	}{
+		{
+			name: "upstream failure becomes the fixed sentence",
+			err: types.WithOpenAIError(types.OpenAIError{Message: "当前分组 openai官渠 下对于模型 gpt-image-2 无可用渠道 (request id: 2026112719)",
+				Type: "new_api_error", Code: "model_not_found"}, 503),
+			want: unavailable,
+		},
+		{
+			name: "relay upstream out of quota is hidden although the code reads like ours",
+			err:  types.WithOpenAIError(types.OpenAIError{Message: "用户额度不足, 剩余额度: ＄0.01", Code: "insufficient_user_quota"}, 403),
+			want: unavailable,
+		},
+		{
+			name: "gateway's own request error at the default 500 keeps its wording",
+			err:  types.NewError(errors.New("failed to copy request to ImageRequest: bad size"), types.ErrorCodeInvalidRequest),
+			want: "failed to copy request to ImageRequest: bad size",
+		},
+		{
+			name: "upstream caller error keeps its wording with hosts masked",
+			err:  types.WithOpenAIError(types.OpenAIError{Message: "image too large for ohmyapis.store, see https://docs.example.com/limits", Code: "invalid_value"}, 400),
+			want: "image too large for ***, see ***",
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			c, _ := gin.CreateTestContext(httptest.NewRecorder())
+			c.Request = httptest.NewRequest("POST", "/v1/images/generations", nil)
+			c.Request.Header.Set("Accept-Language", "zh-CN")
+			common.SetContextKey(c, constant.ContextKeyChannelId, 9)
+			HideUpstreamWordingForCaller(c, tc.err)
+			assert.Equal(t, tc.want, tc.err.ToOpenAIError().Message)
+		})
+	}
 }
