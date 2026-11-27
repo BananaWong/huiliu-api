@@ -52,3 +52,25 @@ Frontend
 - Locale files: strings for the above in all seven languages (`web/scripts/huiliu-add-i18n.mjs`
   appends keys without re-serializing the files). The "Model Square" label reads
   "Models & Pricing" / 模型与价格 / 模型與價格.
+
+## 2026-11-27
+
+Server
+- `service/huiliu_health.go`, `setting/operation_setting/huiliu_health_setting.go`: passive channel health job
+  on the master node, every five minutes. It counts real request outcomes from the consume and error logs
+  per request id (retries on the same channel count once); caller errors (400, 413, 415, 422, 499) do not
+  count. A channel with automatic disabling (`auto_ban`) on is disabled after 3 consecutive failures or a
+  failure rate of 50% over at least 10 requests in the last 30 minutes, and put back after 30 minutes,
+  doubling on each repeat within 6 hours (at most 8 hours). The state lives in the channel's status reason
+  (`huiliu-health#<strikes>: …`); the job only re-enables channels it disabled itself. All thresholds and
+  the on/off switch are options under `huiliu_health_setting.*`. No probes are sent and nothing is spent.
+- `controller/huiliu_health.go`, `router/api-router.go`, `middleware/access_token_routes.go`:
+  `GET /api/huiliu/channel-health` (admins: per channel and model, last hour and day) and
+  `GET /api/huiliu/model-status` (signed-in users: per model of their group, no channel names or error text).
+- `common/init.go`: `ERROR_LOG_ENABLED` defaults to true (the health job reads error logs).
+- `main.go`: starts the health job.
+
+Frontend
+- `web/src/huiliu/health/`: Channel Health page (admin sidebar, `/channel-health`) and Model Status page
+  (account tabs, `/model-status`); `web/src/hooks/use-sidebar-data.ts` links them; strings in all seven
+  languages; status labels registered in `web/src/i18n/static-keys.ts`.

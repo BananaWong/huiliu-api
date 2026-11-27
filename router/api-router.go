@@ -29,6 +29,9 @@ func SetApiRouter(router *gin.Engine) {
 		apiRouter.GET("/uptime/status", controller.GetUptimeKumaStatus)
 		apiRouter.GET("/models", middleware.UserAuth(), controller.DashboardListModels)
 		apiRouter.GET("/status/test", middleware.AdminAuth(), controller.TestStatus)
+		// huiliu: channel health (admins) and model status (signed-in users), see HUILIU_CHANGES.md
+		apiRouter.GET("/huiliu/channel-health", middleware.AdminAuth(), controller.GetChannelHealth)
+		apiRouter.GET("/huiliu/model-status", middleware.UserAuth(), controller.GetModelStatus)
 		apiRouter.GET("/notice", controller.GetNotice)
 		apiRouter.GET("/user-agreement", controller.GetUserAgreement)
 		apiRouter.GET("/privacy-policy", controller.GetPrivacyPolicy)

@@ -150,6 +150,9 @@ func main() {
 	// 数据看板
 	go model.UpdateQuotaData()
 
+	// huiliu: passive channel health job (master node only)
+	service.StartHealthLoop()
+
 	// CHANNEL_UPDATE_FREQUENCY schedules the update of all balances, a system
 	// task registered below.
 	if os.Getenv("CHANNEL_UPDATE_FREQUENCY") != "" {

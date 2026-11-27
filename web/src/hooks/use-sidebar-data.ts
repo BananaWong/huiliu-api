@@ -23,6 +23,8 @@ import {
   CreditCard,
   FileText,
   FlaskConical,
+  Gauge,
+  HeartPulse,
   Key,
   LayoutDashboard,
   ListTodo,
@@ -90,6 +92,12 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
             icon: Key,
           },
           {
+            // huiliu: model status for signed-in users
+            title: t('Model Status'),
+            url: '/model-status',
+            icon: Gauge,
+          },
+          {
             title: t('Usage Logs'),
             url: '/usage-logs/common',
             icon: FileText,
@@ -137,6 +145,12 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
             title: t('Channels'),
             url: '/channels',
             icon: Radio,
+          },
+          {
+            // huiliu: channel health
+            title: t('Channel Health'),
+            url: '/channel-health',
+            icon: HeartPulse,
           },
           {
             title: t('Models'),

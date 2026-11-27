@@ -42,8 +42,11 @@ func accessTokenScopeRule(scope string) accessTokenRouteRule {
 // DeclareAccessTokenPermissionRoute when they are registered.
 var accessTokenRouteRules = map[string]accessTokenRouteRule{
 	// router/api-router.go: top level
-	"GET /api/models":                     accessTokenScopeRule("profile:read"),
-	"GET /api/status/test":                accessTokenScopeRule("log:read"),
+	"GET /api/models":      accessTokenScopeRule("profile:read"),
+	"GET /api/status/test": accessTokenScopeRule("log:read"),
+	// huiliu: channel health (admins) and model status (signed-in users)
+	"GET /api/huiliu/channel-health":      accessTokenScopeRule("log:read"),
+	"GET /api/huiliu/model-status":        accessTokenScopeRule("profile:read"),
 	"GET /api/pricing":                    accessTokenAnyRule,
 	"GET /api/perf-metrics/summary":       accessTokenAnyRule,
 	"GET /api/perf-metrics":               accessTokenAnyRule,
