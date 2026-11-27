@@ -10,6 +10,7 @@ import (
 	"github.com/QuantumNous/new-api/model"
 	relaycommon "github.com/QuantumNous/new-api/relay/common"
 	"github.com/QuantumNous/new-api/relaykit/types"
+	"github.com/QuantumNous/new-api/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,6 +20,7 @@ func Playground(c *gin.Context) {
 
 	defer func() {
 		if newAPIError != nil {
+			service.HideUpstreamWordingForCaller(c, newAPIError)
 			c.JSON(newAPIError.StatusCode, gin.H{
 				"error": newAPIError.ToOpenAIError(common.UpstreamAddresses(c)...),
 			})

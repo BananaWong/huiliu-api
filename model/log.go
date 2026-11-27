@@ -2,12 +2,15 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"time"
 
 	"github.com/QuantumNous/new-api/common"
 	"github.com/QuantumNous/new-api/constant"
+	"github.com/QuantumNous/new-api/i18n"
 	"github.com/QuantumNous/new-api/logger"
+	"github.com/QuantumNous/new-api/setting/operation_setting"
 	"github.com/QuantumNous/new-api/types"
 
 	"github.com/gin-gonic/gin"
@@ -114,10 +117,30 @@ func assignDisplayLogIds(logs []*Log, startIdx int) {
 
 func formatUserLogs(logs []*Log, startIdx int) {
 	for i := range logs {
+		hideUpstreamWordingInUserLog(logs[i])
 		logs[i].ChannelName = ""
 		logs[i].Other = formatLogOtherJSON(logs[i].Other, logOtherVisibilityUser)
 	}
 	assignDisplayLogIds(logs, startIdx)
+}
+
+// hideUpstreamWordingInUserLog applies common.HideUpstreamWording to an error log a
+// user reads, so the upstream's wording stays in the administrators' view only.
+func hideUpstreamWordingInUserLog(log *Log) {
+	if log.Type != LogTypeError || log.ChannelId == 0 || !operation_setting.GetHuiliuPrivacySetting().HideUpstreamWording {
+		return
+	}
+	var outcome struct {
+		StatusCode int    `json:"status_code"`
+		ErrorCode  string `json:"error_code"`
+	}
+	_ = common.UnmarshalJsonStr(log.Other, &outcome)
+	unavailable := i18n.Translate("", i18n.MsgRelayUpstreamUnavailable)
+	text := common.HideUpstreamWording(log.Content, outcome.StatusCode, outcome.ErrorCode, unavailable)
+	if text == unavailable && outcome.StatusCode != 0 {
+		text = fmt.Sprintf("status_code=%d, %s", outcome.StatusCode, unavailable)
+	}
+	log.Content = text
 }
 
 // FormatAdminLogs removes root-only diagnostics while retaining operational
@@ -657,6 +680,7 @@ func StreamUserLogs(ctx context.Context, userId int, filter LogFilter, fn func(*
 	return streamLogs(tx, "logs.id desc", func(log *Log) error {
 		count++
 		log.Id = count
+		hideUpstreamWordingInUserLog(log)
 		log.ChannelName = ""
 		log.Other = formatLogOtherJSON(log.Other, logOtherVisibilityUser)
 		return fn(log)

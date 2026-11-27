@@ -69,6 +69,14 @@ Server
   `GET /api/huiliu/model-status` (signed-in users: per model of their group, no channel names or error text).
 - `common/init.go`: `ERROR_LOG_ENABLED` defaults to true (the health job reads error logs).
 - `main.go`: starts the health job.
+- `common/huiliu_upstream_wording.go`, `service/huiliu_upstream_wording.go`, `controller/relay.go`,
+  `controller/playground.go`, `model/log.go`, `setting/operation_setting/huiliu_privacy_setting.go`, `i18n/`:
+  callers no longer read an upstream's own wording. For a request that reached a channel, the final error
+  becomes `relay.upstream_unavailable` when the upstream could not serve it (401, 402, 403, 408, 429, 5xx),
+  except for the gateway's own errors such as insufficient quota; any other error keeps its text with every
+  URL, domain name and IPv4 address masked (the stock masking covers only the channel's own address). The
+  same applies to the error logs users read and export; administrators still see the original text. Option
+  `huiliu_privacy_setting.hide_upstream_wording`, on by default.
 
 Frontend
 - `web/src/huiliu/health/`: Channel Health page (admin sidebar, `/channel-health`) and Model Status page
